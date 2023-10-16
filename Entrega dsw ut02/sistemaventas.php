@@ -18,7 +18,7 @@
     telefono: <input type="text" name="telefono" /><br />
     e-mail: <input type="text" name="email" size="35" /></br>
     <br>
-    <p>Dia de la semana que le interesa recibirlo:</p>
+    <p>Elija el tipo de usuario:</p>
     <select name="usuario">
         <option>Tipo de usuario:</option>
         <option value="Administrador">administrador</option>
