@@ -1,0 +1,65 @@
+<html>
+<head>
+    <title>Resultado del Registro de Documentos</title>
+</head>
+<body>
+    <h1>Resultado del Registro de Documentos</h1>
+    <table border="1">
+        <tr>
+            <th>Campo</th>
+            <th>Valor</th>
+        </tr>
+        <?php
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            // Procesar los campos del formulario
+            $autores = $_POST["autores"];
+            $nombre_documento = $_POST["nombre_documento"];
+            $descripcion = $_POST["descripcion"];
+            $tipo_documento = $_POST["tipo_documento"];
+            $extension = isset($_POST["extension"]) ? implode(", ", $_POST["extension"]) : "";
+            $palabras_clave = $_POST["palabras_clave"];
+            $idioma = $_POST["idioma"];
+            $visibilidad = $_POST["visibilidad"];
+            $tematica = isset($_POST["tematica"]) ? implode(", ", $_POST["tematica"]) : "";
+
+            // Verificar si al menos un documento ha sido cargado
+            if (isset($_FILES["documento1"]) && $_FILES["documento1"]["error"] === UPLOAD_ERR_OK) {
+                // Procesar los documentos
+                $uploaded_files = [];
+
+                for ($i = 1; $i <= 3; $i++) {
+                    if (isset($_FILES["documento$i"]) && $_FILES["documento$i"]["error"] === UPLOAD_ERR_OK) {
+                        $extension = pathinfo($_FILES["documento$i"]["name"], PATHINFO_EXTENSION);
+                        $destination_directory = "C:/xampp/htdocs/documentos/$extension/";
+
+                        if (!is_dir($destination_directory)) {
+                            mkdir($destination_directory, 0777, true);
+                        }
+
+                        $new_filename = $destination_directory . uniqid() . "." . $extension;
+                        move_uploaded_file($_FILES["documento$i"]["tmp_name"], $new_filename);
+
+                        $uploaded_files[] = $new_filename;
+                    }
+                }
+
+                // Mostrar resumen de los campos
+                echo "<tr><td>Autor/es:</td><td>$autores</td></tr>";
+echo "<tr><td>Nombre de documento:</td><td>$nombre_documento</td></tr>";
+echo "<tr><td>Descripción de documentos:</td><td>$descripcion</td></tr>";
+echo "<tr><td>Tipo documento:</td><td>$tipo_documento</td></tr>";
+echo "<tr><td>Extensión de archivo:</td><td>$extension</td></tr>";
+echo "<tr><td>Palabras Clave:</td><td>$palabras_clave</td></tr>";
+echo "<tr><td>Idioma:</td><td>$idioma</td></tr>";
+echo "<tr><td>Visibilidad:</td><td>$visibilidad</td></tr>";
+echo "<tr><td>Temática:</td><td>$tematica</td></tr>";
+echo "<tr><td>Documentos:</td><td>";
+
+foreach ($uploaded_files as $file) {
+    echo "<a href='$file' target='_blank'>$file</a><br>";
+}
+
+?>
+</table>
+</body>
+</html>
